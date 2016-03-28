@@ -1,0 +1,13 @@
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\bin\Debug\MoleViewer.exe.config
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\bin\Debug\MoleViewer.exe
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\bin\Debug\MoleViewer.pdb
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\MoleViewer.csprojResolveAssemblyReference.cache
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\MainWindow.baml
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\MainWindow.g.cs
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\App.g.cs
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\MoleViewer_MarkupCompile.cache
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\MoleViewer.g.resources
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\MoleViewer.Properties.Resources.resources
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\MoleViewer.csproj.GenerateResource.Cache
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\MoleViewer.exe
+c:\users\neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\Debug\MoleViewer.pdb
