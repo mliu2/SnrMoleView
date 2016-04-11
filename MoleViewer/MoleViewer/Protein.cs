@@ -17,7 +17,7 @@ namespace MoleViewer
         {
             double retval = 0;
             //only execute if prot list of atoms is non empty
-            if (!prot.Any())
+            if (prot.Any())
             {
                 double max = prot[0].X;
                 double min = prot[0].X;
@@ -26,6 +26,7 @@ namespace MoleViewer
                     if (prot[i].X > max) max = prot[i].X;
                     if (prot[i].X < min) min = prot[i].X;
                 }
+                retval = (max + min) / 2;
             }
             return retval;
         }
@@ -33,7 +34,7 @@ namespace MoleViewer
         {
             double retval = 0;
             //only execute if prot list of atoms is non empty
-            if (!prot.Any())
+            if (prot.Any())
             {
                 double max = prot[0].Y;
                 double min = prot[0].Y;
@@ -42,6 +43,7 @@ namespace MoleViewer
                     if (prot[i].Y > max) max = prot[i].Y;
                     if (prot[i].Y < min) min = prot[i].Y;
                 }
+                retval = (max + min) / 2;
             }
             return retval;
         }
@@ -49,7 +51,7 @@ namespace MoleViewer
         {
             double retval = 0;
             //only execute if prot list of atoms is non empty
-            if (!prot.Any())
+            if (prot.Any())
             {
                 double max = prot[0].Z;
                 double min = prot[0].Z;
@@ -58,6 +60,7 @@ namespace MoleViewer
                     if (prot[i].Z > max) max = prot[i].Z;
                     if (prot[i].Z < min) min = prot[i].Z;
                 }
+                retval = (max + min) / 2;
             }
             return retval;
         }
@@ -89,11 +92,16 @@ namespace MoleViewer
                             {
                                 throw new FormatException("Unable to parse residue number");
                             }
+                            string elem = elements[3];
+                            if (elem != "CA")
+                            {
+                                elem = elements[2];
+                            }
                             double x = Convert.ToDouble(elements[10]);
                             double y = Convert.ToDouble(elements[11]);
                             double z = Convert.ToDouble(elements[12]);
                             //create new atom object
-                            prot.Add(new Atom(elements[3], elements[5], chain, res, x, y, z));
+                            prot.Add(new Atom(elem, elements[5], chain, res, x, y, z));
 
                         }
                     }

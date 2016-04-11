@@ -27,6 +27,13 @@ namespace MoleViewer
             }
 
         }
+        public string Ele
+        {
+            get
+            {
+                return element;
+            }
+        }
         public double X
         {
             get
@@ -58,6 +65,13 @@ namespace MoleViewer
             set
             {
                 z = value;
+            }
+        }
+        public bool CA
+        {
+            get
+            {
+                return isCA;
             }
         }
         private double x, y, z;

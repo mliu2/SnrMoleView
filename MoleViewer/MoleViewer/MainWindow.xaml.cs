@@ -25,6 +25,7 @@ namespace MoleViewer
     {
         private Backend backend;
         private Model3DGroup myModel3DGroup;
+        private ModelVisual3D myModelVisual3D;
         
         public MainWindow()
         {
@@ -37,104 +38,48 @@ namespace MoleViewer
 
             // Declare scene objects.
             myModel3DGroup = new Model3DGroup();
-            GeometryModel3D myGeometryModel = new GeometryModel3D();
-            ModelVisual3D myModelVisual3D = new ModelVisual3D();
-            
-            // Define the lights cast in the scene. Without light, the 3D object cannot 
-            // be seen. Note: to illuminate an object from additional directions, create 
-            // additional lights.
-            DirectionalLight myDirectionalLight = new DirectionalLight();
-            myDirectionalLight.Color = Colors.White;
-            myDirectionalLight.Direction = new Vector3D(-0.61, -0.5, -0.61);
-
-            myModel3DGroup.Children.Add(myDirectionalLight);
-
-            // The geometry specifes the shape of the 3D plane. In this sample, a flat sheet 
-            // is created.
-            MeshGeometry3D myMeshGeometry3D = new MeshGeometry3D();
-
-            // Create a collection of normal vectors for the MeshGeometry3D.
-            Vector3DCollection myNormalCollection = new Vector3DCollection();
-            myNormalCollection.Add(new Vector3D(0,0,1));
-            myNormalCollection.Add(new Vector3D(0,0,1));
-            myNormalCollection.Add(new Vector3D(0,0,1));
-            myNormalCollection.Add(new Vector3D(0,0,1));
-            myNormalCollection.Add(new Vector3D(0,0,1));
-            myNormalCollection.Add(new Vector3D(0,0,1));
-            myMeshGeometry3D.Normals = myNormalCollection;
-
-            // Create a collection of vertex positions for the MeshGeometry3D. 
-            Point3DCollection myPositionCollection = new Point3DCollection();
-            myPositionCollection.Add(new Point3D(-0.5, -0.5, 0.5));
-            myPositionCollection.Add(new Point3D(0.5, -0.5, 0.5));
-            myPositionCollection.Add(new Point3D(0.5, 0.5, 0.5));
-            myPositionCollection.Add(new Point3D(0.5, 0.5, 0.5));
-            myPositionCollection.Add(new Point3D(-0.5, 0.5, 0.5));
-            myPositionCollection.Add(new Point3D(-0.5, -0.5, 0.5));
-            myMeshGeometry3D.Positions = myPositionCollection;
-
-            // Create a collection of texture coordinates for the MeshGeometry3D.
-            PointCollection myTextureCoordinatesCollection = new PointCollection();
-            myTextureCoordinatesCollection.Add(new Point(0, 0));
-            myTextureCoordinatesCollection.Add(new Point(1, 0));
-            myTextureCoordinatesCollection.Add(new Point(1, 1));
-            myTextureCoordinatesCollection.Add(new Point(1, 1));
-            myTextureCoordinatesCollection.Add(new Point(0, 1));
-            myTextureCoordinatesCollection.Add(new Point(0, 0));
-            myMeshGeometry3D.TextureCoordinates = myTextureCoordinatesCollection;
-
-            // Create a collection of triangle indices for the MeshGeometry3D.
-            Int32Collection myTriangleIndicesCollection = new Int32Collection();
-            myTriangleIndicesCollection.Add(0);
-            myTriangleIndicesCollection.Add(1);
-            myTriangleIndicesCollection.Add(2);
-            myTriangleIndicesCollection.Add(3);
-            myTriangleIndicesCollection.Add(4);
-            myTriangleIndicesCollection.Add(5);
-            myMeshGeometry3D.TriangleIndices = myTriangleIndicesCollection;
-
-            // Apply the mesh to the geometry model.
-            myGeometryModel.Geometry = myMeshGeometry3D;
-
-            // The material specifies the material applied to the 3D object. In this sample a  
-            // linear gradient covers the surface of the 3D object.
-
-            // Create a horizontal linear gradient with four stops.   
-            LinearGradientBrush myHorizontalGradient = new LinearGradientBrush();
-            myHorizontalGradient.StartPoint = new Point(0, 0.5);
-            myHorizontalGradient.EndPoint = new Point(1, 0.5);
-            myHorizontalGradient.GradientStops.Add(new GradientStop(Colors.Yellow, 0.0));
-            myHorizontalGradient.GradientStops.Add(new GradientStop(Colors.Red, 0.25));
-            myHorizontalGradient.GradientStops.Add(new GradientStop(Colors.Blue, 0.75));
-            myHorizontalGradient.GradientStops.Add(new GradientStop(Colors.LimeGreen, 1.0));
-
-            // Define material and apply to the mesh geometries.
-            DiffuseMaterial myMaterial = new DiffuseMaterial(myHorizontalGradient);
-            myGeometryModel.Material = myMaterial;
-            myGeometryModel.BackMaterial = myMaterial;
-
-            // Apply a transform to the object. In this sample, a rotation transform is applied,  
-            // rendering the 3D object rotated.
-            RotateTransform3D myRotateTransform3D = new RotateTransform3D();
-            AxisAngleRotation3D myAxisAngleRotation3d = new AxisAngleRotation3D();
-            myAxisAngleRotation3d.Axis = new Vector3D(0,3,0);
-            myAxisAngleRotation3d.Angle = 40;
-            myRotateTransform3D.Rotation = myAxisAngleRotation3d;
-            myGeometryModel.Transform = myRotateTransform3D;
-
-            // Add the geometry model to the model group.
-            myModel3DGroup.Children.Add(myGeometryModel);
-
-            // Add the group of models to the ModelVisual3d.
-            myModelVisual3D.Content = myModel3DGroup;
-
-            // 
+            myModelVisual3D = new ModelVisual3D();
+         
             myDisplay.Children.Add(myModelVisual3D);
 
-            myDisplay.Height = display.Height;
-            myDisplay.Width = display.Width;
+            myModelVisual3D.Content = myModel3DGroup;
         }
-
+        private void MakeAtom(Atom atom, double radius, Color color)
+        {
+            MeshGeometry3D mesh = backend.GenerateSphere(new Point3D(atom.X, atom.Y, atom.Z), radius, 9, 9);
+            GeometryModel3D geomod = new GeometryModel3D();
+            geomod.Geometry = mesh;
+            SolidColorBrush solidBrush = new SolidColorBrush(color);
+            geomod.Material = new DiffuseMaterial(solidBrush);
+            myModel3DGroup.Children.Add(geomod);
+            
+        }
+        private void MakeProt1()
+        {
+            foreach (Atom atom in backend.Protein1.prot)
+            {
+                if (atom.CA == true)
+                {
+                    MakeAtom(atom, Backend.C_RAD, Colors.CornflowerBlue);
+                }
+                else if (atom.Ele == "C")
+                {
+                    MakeAtom(atom, Backend.C_RAD, Colors.CornflowerBlue);
+                }
+                else if (atom.Ele == "N")
+                {
+                    MakeAtom(atom, Backend.N_RAD, Colors.PaleVioletRed);
+                }
+                else if (atom.Ele == "O")
+                {
+                    MakeAtom(atom, Backend.O_RAD, Colors.Ivory);
+                }
+            }
+        }
+        private void Focus(Protein prot)
+        {
+            PCamera.Position = new Point3D(prot.CenterX(), prot.CenterY(), prot.CenterZ());
+        }
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
             //file browser window
@@ -149,6 +94,8 @@ namespace MoleViewer
                     int num = backend.Prot1Parse(openFileDialog1.FileName);
                     FileName1.Text = openFileDialog1.SafeFileName;
                     Output.Text += openFileDialog1.FileName + " : " + num + " atoms loaded \r\n";
+                    Focus(backend.Protein1);
+                    MakeProt1();
                 }
                 catch (Exception ex)
                 {
@@ -172,6 +119,7 @@ namespace MoleViewer
                     int num = backend.Prot2Parse(openFileDialog1.FileName);
                     FileName2.Text = openFileDialog1.SafeFileName;
                     Output.Text += openFileDialog1.FileName + " : " + num + " atoms loaded \r\n";
+                    Focus(backend.Protein2);
                 }
                 catch (Exception ex)
                 {
@@ -186,11 +134,12 @@ namespace MoleViewer
 
         private bool mDown;
         private Point mLastPos;
-        private double TotalDx, TotalDy;
+        private double RotTotalDx, RotTotalDy, TransTotalDx, TransTotalDy;
         private bool mMidDown;
+        //Vector3D tsltVector;
         private void Mouse_Wheel(object sender, MouseWheelEventArgs e)
         {
-            PCamera.Position = new Point3D(PCamera.Position.X, PCamera.Position.Y, PCamera.Position.Z - e.Delta / 1000D);
+            PCamera.Position = new Point3D(PCamera.Position.X, PCamera.Position.Y, PCamera.Position.Z - e.Delta / 100D);
         }
 
         private void Mouse_Up(object sender, MouseButtonEventArgs e)
@@ -201,6 +150,7 @@ namespace MoleViewer
 
         private void Mouse_Down(object sender, MouseButtonEventArgs e)
         {
+            if (e.LeftButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed) return;
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 mDown = true;
@@ -208,10 +158,6 @@ namespace MoleViewer
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
                 mMidDown = true;
-            }
-            else
-            {
-                return;
             }
             Point pos = Mouse.GetPosition(myDisplay);
             mLastPos = new Point(pos.X - myDisplay.ActualWidth / 2, myDisplay.ActualHeight / 2 - pos.Y);
@@ -224,7 +170,9 @@ namespace MoleViewer
                 Point pos = Mouse.GetPosition(myDisplay);
                 Point actualPos = new Point(pos.X - myDisplay.ActualWidth / 2, myDisplay.ActualHeight / 2 - pos.Y);
                 double dx = actualPos.X - mLastPos.X, dy = actualPos.Y - mLastPos.Y;
-                PCamera.Position = new Point3D(PCamera.Position.X - dx / (myDisplay.ActualWidth*5), PCamera.Position.Y - dy / (myDisplay.ActualHeight*5), PCamera.Position.Z);
+
+                TransTotalDx += dx/500; TransTotalDy += dy/500;
+                PCamera.Transform = new TranslateTransform3D(TransTotalDx, TransTotalDy, 0);
             }
             if (mDown)
             {
@@ -232,10 +180,10 @@ namespace MoleViewer
                 Point actualPos = new Point(pos.X - myDisplay.ActualWidth / 2, myDisplay.ActualHeight / 2 - pos.Y);
                 double dx = actualPos.X - mLastPos.X, dy = actualPos.Y - mLastPos.Y;
 
-                TotalDx += dx; TotalDy += dy;
+                RotTotalDx += dx; RotTotalDy += dy;
 
-                double theta = TotalDx / 3;
-                double phi = TotalDy / 3;
+                double theta = RotTotalDx / 3;
+                double phi = RotTotalDy / 3;
                 Vector3D thetaAxis = new Vector3D(0, 1, 0);
                 Vector3D phiAxis = new Vector3D(-1, 0, 0);
 
@@ -246,10 +194,20 @@ namespace MoleViewer
                 group.Children.Add(new RotateTransform3D(r));
                 r = new QuaternionRotation3D(new Quaternion(phiAxis, phi));
                 group.Children.Add(new RotateTransform3D(r));
+              
                 myModel3DGroup.Transform = group;
 
                 mLastPos = actualPos;
             }
         }
+
+        private void Mouse_Leave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            mMidDown = false;
+            mDown = false;
+        }
+
+
+ 
     }
 }
