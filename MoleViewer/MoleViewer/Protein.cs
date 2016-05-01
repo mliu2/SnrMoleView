@@ -64,6 +64,15 @@ namespace MoleViewer
             }
             return retval;
         }
+        public void Translate(double x, double y, double z)
+        {
+            foreach (Atom atom in prot)
+            {
+                atom.X = atom.X + x;
+                atom.Y = atom.Y + y;
+                atom.Z = atom.Z + z;
+            }
+        }
         /*
          * 
          * */

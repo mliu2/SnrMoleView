@@ -17,7 +17,7 @@
                 <Viewport3D.Children>
                     <ModelVisual3D>
                         <ModelVisual3D.Content>
-                            <DirectionalLight Color="#FFFFFF" Direction="-0.612372,-0.5,-0.612372" />
+                            <DirectionalLight x:Name="myLight"  Color="#FFFFFF" Direction="-0.612372,-0.5,-0.612372" />
                         </ModelVisual3D.Content>
                     </ModelVisual3D>
                 </Viewport3D.Children>
