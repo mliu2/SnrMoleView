@@ -4,16 +4,16 @@
         Title="MoleViewer" Height="526" Width="767">
     <Grid>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="284" Margin="465,10,0,0">
-            <Button x:Name="Load1" Content="Load" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button1_Click" Margin="198,9,0,0"/>
+            <Button x:Name="Load1" Content="Load" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button1_Click" Margin="198,9,0,0" ToolTip="Browse for .cif file to load"/>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="284" Margin="465,49,0,0">
-            <Button x:Name="Load2" Content="Load" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button2_Click" Margin="198,9,0,0"/>
+            <Button x:Name="Load2" Content="Load" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button2_Click" Margin="198,9,0,0" ToolTip="Browse for .cif file to load"/>
         </Border>
-        <TextBox x:Name="FileName1" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="None" VerticalAlignment="Top" Width="174" Margin="477,21,0,0" IsReadOnly="True"/>
-        <TextBox x:Name="FileName2" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="None" VerticalAlignment="Top" Width="174" Margin="477,57,0,0" IsReadOnly="True"/>
-        <TextBox x:Name="Output" HorizontalAlignment="Left" Height="351" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" Margin="465,134,0,0" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
-        <Canvas x:Name="display" HorizontalAlignment="Left" Height="475" VerticalAlignment="Top" Width="450" RenderTransformOrigin="0.945,0.924" Margin="10,10,0,0" MouseWheel="Mouse_Wheel" MouseUp="Mouse_Up" MouseDown="Mouse_Down" MouseMove="Mouse_Move" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeave="Mouse_Leave">
-            <Viewport3D x:Name="myDisplay" HorizontalAlignment="Left" Height="475" VerticalAlignment="Top" Width="450" >
+        <TextBox x:Name="FileName1" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="Protein 1" VerticalAlignment="Top" Width="174" Margin="477,21,0,0" IsReadOnly="True" ToolTip="Protein 1"/>
+        <TextBox x:Name="FileName2" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="Protein 2" VerticalAlignment="Top" Width="174" Margin="477,57,0,0" IsReadOnly="True" ToolTip="Protein 2"/>
+        <TextBox x:Name="Output" HorizontalAlignment="Left" Height="351" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" Margin="465,134,0,0" IsReadOnly="True" VerticalScrollBarVisibility="Auto" ToolTip="Output Feed"/>
+        <Canvas x:Name="display" HorizontalAlignment="Left" Height="475" VerticalAlignment="Top" Width="450" RenderTransformOrigin="0.945,0.924" Margin="10,10,0,0" MouseWheel="Mouse_Wheel" MouseUp="Mouse_Up" MouseDown="Mouse_Down" MouseMove="Mouse_Move" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeave="Mouse_Leave" ToolTip="Click and Drag to Rotate.&#x0a;Mouse Wheel to Zoom.&#x0a;Click Middle Mouse Button and Drag to Pan." >
+            <Viewport3D x:Name="myDisplay" HorizontalAlignment="Left" Height="475" VerticalAlignment="Top" Width="450">
                 <Viewport3D.Children>
                     <ModelVisual3D>
                         <ModelVisual3D.Content>
@@ -22,9 +22,11 @@
                     </ModelVisual3D>
                 </Viewport3D.Children>
                 <Viewport3D.Camera>
-                    <PerspectiveCamera x:Name="PCamera" Position="0,0,2" LookDirection="0,0,-1" FieldOfView="60"/>
+                    <PerspectiveCamera x:Name="PCamera" Position="0,0,30" LookDirection="0,0,-1" FieldOfView="60"/>
                 </Viewport3D.Camera>
             </Viewport3D>
         </Canvas>
+        <Button x:Name="Align" Content="Align" HorizontalAlignment="Left" Margin="665,94,0,0" VerticalAlignment="Top" Width="75" Click="Align_Click" ToolTip="Aligns Protein 2 to Protein 1 and reports the RMSD.&#x0a;Also highlights residue on Protein 1 whose Alpha Carbon has the largest distance to an Alpha Carbon on Protein 2."/>
+        <CheckBox x:Name="FullAtomToggle" Content="Full Atom Model" HorizontalAlignment="Left" Margin="477,99,0,0" VerticalAlignment="Top" Checked="FullAtomToggle_Checked" Unchecked="FullAtomToggle_Unchecked" ToolTip="Toggles between Alpha Carbon Only and Full Atom rendering."/>
     </Grid>
 </Window>

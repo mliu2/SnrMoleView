@@ -35,6 +35,8 @@ namespace MoleViewer
         private AxisAngleRotation3D _rotationY = new AxisAngleRotation3D(new Vector3D(-1, 0, 0) , 0);
         private AxisAngleRotation3D _rotationAboutZ = new AxisAngleRotation3D(new Vector3D(0, 0, 1), 0);
 
+        private bool _fullAtom = false; 
+
         public MainWindow()
         {
             InitializeComponent();
@@ -65,56 +67,65 @@ namespace MoleViewer
             SolidColorBrush solidBrush = new SolidColorBrush(color);
             geomod.Material = new DiffuseMaterial(solidBrush);
             myModel3DGroup.Children.Add(geomod);
-            
         }
-        private void CenterProt(Protein prtn)
+        private void MakeAtomHighlight(Atom atom)
         {
-            prtn.Translate(-prtn.CenterX(), -prtn.CenterY(), -prtn.CenterZ());
+            MeshGeometry3D mesh = backend.GenerateSphere(new Point3D(atom.X, atom.Y, atom.Z), .8, 9, 9);
+            GeometryModel3D geomod = new GeometryModel3D();
+            geomod.Geometry = mesh;
+            SolidColorBrush solidBrush = new SolidColorBrush(Colors.Yellow);
+            geomod.Material = new EmissiveMaterial(solidBrush);
+            myModel3DGroup.Children.Add(geomod);
         }
         private void MakeProt1()
         {
-            CenterProt(backend.Protein1);
-            foreach (Atom atom in backend.Protein1.prot)
+            
+            foreach (Atom atom in backend.Protein1.Atoms)
             {
                 if (atom.CA == true)
                 {
                     MakeAtom(atom, Backend.C_RAD, Colors.CornflowerBlue);
                 }
-                else if (atom.Ele == "C")
+                else if (atom.Ele == "C" && _fullAtom)
                 {
                     MakeAtom(atom, Backend.C_RAD, Colors.CornflowerBlue);
                 }
-                else if (atom.Ele == "N")
+                else if (atom.Ele == "N" && _fullAtom)
                 {
                     MakeAtom(atom, Backend.N_RAD, Colors.PaleVioletRed);
                 }
-                else if (atom.Ele == "O")
+                else if (atom.Ele == "O" && _fullAtom)
                 {
                     MakeAtom(atom, Backend.O_RAD, Colors.Ivory);
+                }
+
+                if (atom.Residue_Num == backend.MaxResidue)
+                {
+                    MakeAtomHighlight(atom);
                 }
             }
         }
         private void MakeProt2()
-        {
-            CenterProt(backend.Protein2);
-            foreach (Atom atom in backend.Protein2.prot)
+        {  
+            foreach (Atom atom in backend.Protein2.Atoms)
             {
+
                 if (atom.CA == true)
                 {
                     MakeAtom(atom, Backend.C_RAD, Colors.Crimson);
                 }
-                /*else if (atom.Ele == "C")
+                else if (atom.Ele == "C" && _fullAtom)
                 {
                     MakeAtom(atom, Backend.C_RAD, Colors.Crimson);
                 }
-                else if (atom.Ele == "N")
+                else if (atom.Ele == "N" && _fullAtom)
                 {
                     MakeAtom(atom, Backend.N_RAD, Colors.PaleVioletRed);
                 }
-                else if (atom.Ele == "O")
+                else if (atom.Ele == "O" && _fullAtom)
                 {
                     MakeAtom(atom, Backend.O_RAD, Colors.Ivory);
-                }*/
+                }
             }
         }
         private void redraw()
@@ -123,7 +134,7 @@ namespace MoleViewer
             MakeProt1();
             MakeProt2();
         }
-        private void Focus()
+        private void FocusProt()
         {
             PCamera.Position = new Point3D(0, 0, PCamera.Position.Z);
         }
@@ -140,8 +151,8 @@ namespace MoleViewer
                     //display number of atoms loaded and file name
                     int num = backend.Prot1Parse(openFileDialog1.FileName);
                     FileName1.Text = openFileDialog1.SafeFileName;
-                    Output.Text += openFileDialog1.FileName + " : " + num + " atoms loaded \r\n";
-                    Focus();
+                    Output.Text += "***\r\n" + openFileDialog1.FileName + " : " + num + " atoms loaded \r\n***\r\n";
+                    FocusProt();
                     redraw();
                 }
                 catch (Exception ex)
@@ -165,8 +176,8 @@ namespace MoleViewer
                     //display number of atoms loaded and file name
                     int num = backend.Prot2Parse(openFileDialog1.FileName);
                     FileName2.Text = openFileDialog1.SafeFileName;
-                    Output.Text += openFileDialog1.FileName + " : " + num + " atoms loaded \r\n";
-                    Focus();
+                    Output.Text += "***\r\n" + openFileDialog1.FileName + " : " + num + " atoms loaded \r\n***\r\n";
+                    FocusProt();
                     redraw();
                 }
                 catch (Exception ex)
@@ -223,53 +234,12 @@ namespace MoleViewer
                 TransTotalDx += dx/5000; TransTotalDy += dy/5000;
                 PCamera.Position += (PCamera.UpDirection * dy/500);
                 PCamera.Position += (Vector3D.CrossProduct(PCamera.LookDirection, PCamera.UpDirection) * dx/500);
-                /*Vector3D tempY = (PCamera.UpDirection * dy/500);
-                Vector3D tempX = (Vector3D.CrossProduct(PCamera.LookDirection, PCamera.UpDirection) * dx/500);*/
-                /*_translate.OffsetX += tempY.X + tempX.X;
-                _translate.OffsetY += tempY.Y + tempX.Y;
-                _translate.OffsetZ += tempY.Z + tempX.Z;*/
-                /*Transform3DGroup group = new Transform3DGroup();
-                group.Children.Clear();
-                group.Children.Add(_translate);
-                myModel3DGroup.Transform = group;*/
-                //PCamera.Transform = new TranslateTransform3D(TransTotalDx, TransTotalDy, 0);
-                /*Transform3DGroup group = new Transform3DGroup();
-                group.Children.Clear();
-                group.Children.Add(_transform);
-                group.Children.Add(_translate);
-                PCamera.Transform = group;*/
             }
             if (mDown)
             {
                 Track(e.GetPosition(this));
                 PCamera.Transform = _transform;
                 myLight.Transform = _transform;
-
-                
-                //Track2(e.GetPosition(this));
-                //myModel3DGroup.Transform = _transform;
-                /*Point pos = Mouse.GetPosition(myDisplay);
-                Point actualPos = new Point(pos.X - myDisplay.ActualWidth / 2, myDisplay.ActualHeight / 2 - pos.Y);
-                double dx = actualPos.X - mLastPos.X, dy = actualPos.Y - mLastPos.Y;
-
-                RotTotalDx += dx; RotTotalDy += dy;
-
-                double theta = RotTotalDx / 3;
-                double phi = RotTotalDy / 3;
-                Vector3D thetaAxis = new Vector3D(0, 1, 0);
-                Vector3D phiAxis = new Vector3D(-1, 0, 0);
-
-                Transform3DGroup group = new Transform3DGroup();
-                group.Children.Clear();
-                QuaternionRotation3D r;
-                r = new QuaternionRotation3D(new Quaternion(thetaAxis, theta));
-                group.Children.Add(new RotateTransform3D(r));
-                r = new QuaternionRotation3D(new Quaternion(phiAxis, phi));
-                group.Children.Add(new RotateTransform3D(r));
-              
-                myModel3DGroup.Transform = group;
-
-                mLastPos = actualPos;*/
             }
         }
         private void Mouse_Leave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -318,27 +288,31 @@ namespace MoleViewer
 
             _previousPosition3D = currentPosition3D;
         }
-        private void Track2(Point currentPosition)
+        private void Align_Click(object sender, RoutedEventArgs e)
         {
-            Vector3D currentPosition3D = ProjectToTrackball(
-                ActualWidth, ActualHeight, currentPosition);
+            try
+            {
+                double rmsd = backend.ICPAlignment();
+                redraw();
+                Output.Text += "RMSD = " + Math.Round(Convert.ToDecimal(rmsd), 3) + "\r\n";
+                Output.Text += "Alignment Complete.\r\n";
+            }
+            catch (Exception ex)
+            {
+                Output.Text += ex.Message + "\r\n";
+            }
+        }
 
-            double dx = currentPosition3D.X - _previousPosition3D.X;
-            double dy = currentPosition3D.Y - _previousPosition3D.Y;
+        private void FullAtomToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            _fullAtom = true;
+            redraw();
+        }
 
-            _rotationY.Angle += dy * 90;
-
-            //Quaternion delta = new Quaternion(new Vector3D(0, Math.Cos(_rotationY.Angle * Math.PI / 180), Math.Sin(_rotationY.Angle * Math.PI / 180)), dx * 90);
-            //Quaternion q = new Quaternion(_rotationX.Axis, _rotationX.Angle);
-            //q *= delta;
-            //_rotationX.Axis = q.Axis;
-            //_rotationX.Angle = q.Angle;
-
-            _rotationY.Angle += Math.Cos(_rotationAboutZ.Angle * Math.PI / 180) * dx * 90;
-            _rotationX.Angle += Math.Cos(_rotationY.Angle * Math.PI / 180) * dx * 90;
-            _rotationAboutZ.Angle += Math.Sin(_rotationY.Angle * Math.PI / 180) * dx * 90;
-
-            _previousPosition3D = currentPosition3D;
+        private void FullAtomToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            _fullAtom = false;
+            redraw();
         }
 
  

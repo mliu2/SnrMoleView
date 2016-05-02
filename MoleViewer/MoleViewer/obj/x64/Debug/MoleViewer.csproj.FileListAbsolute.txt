@@ -11,3 +11,6 @@ C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x6
 C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Debug\MoleViewer.csproj.GenerateResource.Cache
 C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Debug\MoleViewer.exe
 C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Debug\MoleViewer.pdb
+C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\bin\x64\Debug\icp_net.dll
+C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\bin\x64\Debug\MathNet.Numerics.dll
+C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\bin\x64\Debug\MathNet.Numerics.xml

@@ -74,6 +74,13 @@ namespace MoleViewer
                 return isCA;
             }
         }
+        public int Residue_Num
+        {
+            get
+            {
+                return res_num;
+            }
+        }
         private double x, y, z;
         private int res_num;
         private char chain;
