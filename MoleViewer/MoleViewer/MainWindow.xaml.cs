@@ -43,6 +43,21 @@ namespace MoleViewer
             backend = new Backend();
             Shape3d();
         }
+        private void InitializeToolbar()
+        {
+            ToolBarButton toolBarButton1 = new ToolBarButton("Help");
+            ToolBarButton toolBarButton2 = new ToolBarButton("About");
+        }
+        private void ShowHelp(object sender, RoutedEventArgs e)
+        {
+            HelpWindow help = new HelpWindow();
+            help.Show();
+        }
+        private void ShowAbout(object sender, RoutedEventArgs e)
+        {
+            AboutWindow about = new AboutWindow();
+            about.Show();
+        }
         private void Shape3d()
         {
 
@@ -74,6 +89,7 @@ namespace MoleViewer
             GeometryModel3D geomod = new GeometryModel3D();
             geomod.Geometry = mesh;
             SolidColorBrush solidBrush = new SolidColorBrush(Colors.Yellow);
+            solidBrush.Opacity = .5;
             geomod.Material = new EmissiveMaterial(solidBrush);
             myModel3DGroup.Children.Add(geomod);
         }
@@ -92,14 +108,14 @@ namespace MoleViewer
                 }
                 else if (atom.Ele == "N" && _fullAtom)
                 {
-                    MakeAtom(atom, Backend.N_RAD, Colors.PaleVioletRed);
+                    MakeAtom(atom, Backend.N_RAD, Colors.PaleTurquoise);
                 }
                 else if (atom.Ele == "O" && _fullAtom)
                 {
                     MakeAtom(atom, Backend.O_RAD, Colors.Ivory);
                 }
 
-                if (atom.Residue_Num == backend.MaxResidue)
+                if (atom.Residue_Num == backend.MaxResidue1)
                 {
                     MakeAtomHighlight(atom);
                 }
@@ -124,7 +140,12 @@ namespace MoleViewer
                 }
                 else if (atom.Ele == "O" && _fullAtom)
                 {
-                    MakeAtom(atom, Backend.O_RAD, Colors.Ivory);
+                    MakeAtom(atom, Backend.O_RAD, Colors.LightSalmon);
+                }
+
+                if (atom.Residue_Num == backend.MaxResidue2)
+                {
+                    MakeAtomHighlight(atom);
                 }
             }
         }
@@ -188,12 +209,10 @@ namespace MoleViewer
         }
 
         //HANDLERS FOR MOUSE CAMERA CONTROL
-        //Adapted from:
-        //https://3dtools.codeplex.com/SourceControl/latest#3DTools/3DTools/TrackballDecorator.cs
+        
 
         private bool mDown;
         private Point mLastPos;
-        private double TransTotalDx, TransTotalDy;
         private bool mMidDown;
         //Vector3D tsltVector;
         private void Mouse_Wheel(object sender, MouseWheelEventArgs e)
@@ -231,7 +250,6 @@ namespace MoleViewer
                 Point actualPos = new Point(pos.X - myDisplay.ActualWidth / 2, myDisplay.ActualHeight / 2 - pos.Y);
                 double dx = actualPos.X - mLastPos.X, dy = actualPos.Y - mLastPos.Y;
 
-                TransTotalDx += dx/5000; TransTotalDy += dy/5000;
                 PCamera.Position += (PCamera.UpDirection * dy/500);
                 PCamera.Position += (Vector3D.CrossProduct(PCamera.LookDirection, PCamera.UpDirection) * dx/500);
             }
@@ -247,6 +265,8 @@ namespace MoleViewer
             mMidDown = false;
             mDown = false;
         }
+        //Adapted from:
+        //https://3dtools.codeplex.com/SourceControl/latest#3DTools/3DTools/TrackballDecorator.cs
         private Vector3D ProjectToTrackball(double width, double height, Point point)
         {
             double x = point.X / (width / 2);    // Scale so bounds map to [0,0] - [2,2]
@@ -315,6 +335,5 @@ namespace MoleViewer
             redraw();
         }
 
- 
     }
 }

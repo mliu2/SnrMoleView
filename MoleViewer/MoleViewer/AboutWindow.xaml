@@ -1,0 +1,10 @@
+﻿<Window x:Class="MoleViewer.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="About" Height="464.016" Width="707.532" ResizeMode="NoResize">
+    <Grid>
+        <Label Content="About MoleViewer" VerticalAlignment="Top" Height="45" FontSize="22" FontWeight="Bold" FontFamily="Euphemia" Margin="234,5,0,0" HorizontalAlignment="Left" Width="250"/>
+        <TextBox TextWrapping="Wrap" Text="Mingzhao Liu, 2016&#xD;&#xA;Compiled for x64 Windows Operating Systems&#xD;&#xA;Written in C# and using Windows Presentation Forms.&#xD;&#xA;***&#xD;&#xA;Sphere Mesh Generator by Charles Petzold&#xD;&#xA;ftp://ftp.oreilly.com/pub/examples/9780735623941/3DProgWin/Chapter%206/BeachBallSphere/BeachBallSphere.cs&#xD;&#xA;***&#xD;&#xA;Camera Rotation and Panning Adapted from 3DTools&#xD;&#xA;https://3dtools.codeplex.com/SourceControl/latest#3DTools/3DTools/TrackballDecorator.cs&#xD;&#xA;***&#xD;&#xA;LIBICP Alignment Algorithm&#xD;&#xA;http://www.cvlibs.net/software/libicp/&#xD;&#xA;***&#xD;&#xA;LIBICP .NET Wrapper by Peter Brook&#xD;&#xA;https://github.com/peterbrook/libicp-net&#xD;&#xA;***&#xD;&#xA;Math .NET Numerics&#xD;&#xA;http://numerics.mathdotnet.com/&#xD;&#xA;***" Margin="10,50,10,10" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
+
+    </Grid>
+</Window>

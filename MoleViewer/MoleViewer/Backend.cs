@@ -27,14 +27,16 @@ namespace MoleViewer
         private Protein _prot1;
         private Protein _prot2;
         //holds distance for CA and records the residue number
-        private SortedDictionary<double, int> _CADist;
+        private SortedDictionary<double, ResNumPair> m_CADist;
         //residue number with the largest distance from its pair
-        private int _maxResNum = 0;
+        private int m_maxResNum1 = 0;
+        //pair to above residue number
+        private int m_maxResNum2 = 0;
         public Backend()
         {
             _prot1 = new Protein();
             _prot2 = new Protein();
-            _CADist = new SortedDictionary<double, int>();
+            m_CADist = new SortedDictionary<double, ResNumPair>();
         }
         private void CenterProt(Protein prtn)
         {
@@ -95,23 +97,28 @@ namespace MoleViewer
         {
             int num = _prot1.ParseFile(file);
             CenterProt(Protein1);
-            _maxResNum = 0;
-            _CADist.Clear();
+            RMSDDictClear();
             return num;
         }
         public int Prot2Parse(string file)
         {
             int num = _prot2.ParseFile(file);
             CenterProt(Protein2);
-            _maxResNum = 0;
-            _CADist.Clear();
+            RMSDDictClear();
             return num;
         }
-        public int MaxResidue
+        public int MaxResidue1
         {
             get
             {
-                return _maxResNum;
+                return m_maxResNum1;
+            }
+        }
+        public int MaxResidue2
+        {
+            get
+            {
+                return m_maxResNum2;
             }
         }
         public Protein Protein1
@@ -176,17 +183,25 @@ namespace MoleViewer
             _prot2.Translate(TMat[0], TMat[1], TMat[2]);
             return RMSD();
         }
+
+        private void RMSDDictClear()
+        {
+            m_CADist.Clear();
+            m_maxResNum1 = 0;
+            m_maxResNum2 = 0;
+        }
         //Finds the nearest CA carbon in protein 2, should input index of a CA carbon on protein 1
-        private double Nearest(int CAIndex)
+        private double Nearest(int a_CAIndex)
         {
             double NearDist = double.PositiveInfinity;
-            if (CAIndex < _prot1.Count)
+            int pairedAtom = 0;
+            if (a_CAIndex < Protein1.Count)
             {
-                double templateX = _prot1.Atoms[CAIndex].X;
-                double templateY = _prot1.Atoms[CAIndex].Y;
-                double templateZ = _prot1.Atoms[CAIndex].Z;
-                
-                foreach (Atom atom in _prot2.Atoms)
+                double templateX = Protein1.Atoms[a_CAIndex].X;
+                double templateY = Protein1.Atoms[a_CAIndex].Y;
+                double templateZ = Protein1.Atoms[a_CAIndex].Z;
+
+                foreach (Atom atom in Protein2.Atoms)
                 {
                     if (atom.CA)
                     {
@@ -195,6 +210,7 @@ namespace MoleViewer
                         if (tempDist < NearDist)
                         {
                             NearDist = tempDist;
+                            pairedAtom = atom.Residue_Num;
                         }
                     }   
                 }
@@ -203,26 +219,27 @@ namespace MoleViewer
             {
                 throw (new Exception("Distance calculation error: Template CAIndex out of range."));
             }
+            m_CADist.Add(NearDist, new ResNumPair(Protein1.Atoms[a_CAIndex].Residue_Num, pairedAtom));
             return NearDist;
         }
         //determines the root mean square deviation
         //which the square root of the mean of the distance between a set of points
         private double RMSD()
         {
-            _CADist.Clear();
+            RMSDDictClear();
             int count = 0;
             double SumDist = 0;
-            for(int i = 0; i < _prot1.Count; i++)
+            for(int i = 0; i < Protein1.Count; i++)
             {
-                if (_prot1.Atoms[i].CA)
+                if (Protein1.Atoms[i].CA)
                 {
                     double dist = Nearest(i);
-                    _CADist.Add(dist, _prot1.Atoms[i].Residue_Num);
                     SumDist += dist;
                     count++;
                 }
             }
-            _maxResNum = _CADist.Last().Value;
+            m_maxResNum1 = m_CADist.Last().Value.Prot1Num;
+            m_maxResNum2 = m_CADist.Last().Value.Prot2Num;
             return Math.Sqrt(SumDist / count);
         }
     }
