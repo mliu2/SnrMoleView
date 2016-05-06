@@ -8,6 +8,17 @@ namespace MoleViewer
 {
     class Atom
     {
+        public Atom()
+        {
+            element = null;
+            residue = null;
+            chain = '\0';
+            res_num = 0;
+            x = 0;
+            y = 0;
+            z = 0;
+            isCA = false;
+        }
         public Atom(string ele, string res, char cha, int r_num, double x_in, double y_in, double z_in)
         {
             element = ele;
@@ -79,6 +90,13 @@ namespace MoleViewer
             get
             {
                 return res_num;
+            }
+        }
+        public char Chain
+        {
+            get
+            {
+                return chain;
             }
         }
         private double x, y, z;

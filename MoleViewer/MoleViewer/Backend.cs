@@ -27,16 +27,13 @@ namespace MoleViewer
         private Protein _prot1;
         private Protein _prot2;
         //holds distance for CA and records the residue number
-        private SortedDictionary<double, ResNumPair> m_CADist;
-        //residue number with the largest distance from its pair
-        private int m_maxResNum1 = 0;
-        //pair to above residue number
-        private int m_maxResNum2 = 0;
+        private List<ResNumPair> m_CAPair;
+        private ResNumPair m_maxDistPair;
         public Backend()
         {
             _prot1 = new Protein();
             _prot2 = new Protein();
-            m_CADist = new SortedDictionary<double, ResNumPair>();
+            m_CAPair = new List<ResNumPair>();
         }
         private void CenterProt(Protein prtn)
         {
@@ -107,18 +104,11 @@ namespace MoleViewer
             RMSDDictClear();
             return num;
         }
-        public int MaxResidue1
+        public ResNumPair MaxDistResidue
         {
             get
             {
-                return m_maxResNum1;
-            }
-        }
-        public int MaxResidue2
-        {
-            get
-            {
-                return m_maxResNum2;
+                return m_maxDistPair;
             }
         }
         public Protein Protein1
@@ -186,15 +176,14 @@ namespace MoleViewer
 
         private void RMSDDictClear()
         {
-            m_CADist.Clear();
-            m_maxResNum1 = 0;
-            m_maxResNum2 = 0;
+            m_CAPair.Clear();
+            m_maxDistPair = new ResNumPair();
         }
         //Finds the nearest CA carbon in protein 2, should input index of a CA carbon on protein 1
         private double Nearest(int a_CAIndex)
         {
             double NearDist = double.PositiveInfinity;
-            int pairedAtom = 0;
+            Atom pairedAtom = new Atom();
             if (a_CAIndex < Protein1.Count)
             {
                 double templateX = Protein1.Atoms[a_CAIndex].X;
@@ -210,7 +199,7 @@ namespace MoleViewer
                         if (tempDist < NearDist)
                         {
                             NearDist = tempDist;
-                            pairedAtom = atom.Residue_Num;
+                            pairedAtom = atom;
                         }
                     }   
                 }
@@ -219,7 +208,7 @@ namespace MoleViewer
             {
                 throw (new Exception("Distance calculation error: Template CAIndex out of range."));
             }
-            m_CADist.Add(NearDist, new ResNumPair(Protein1.Atoms[a_CAIndex].Residue_Num, pairedAtom));
+            m_CAPair.Add(new ResNumPair(Protein1.Atoms[a_CAIndex].Residue_Num, pairedAtom.Residue_Num, Protein1.Atoms[a_CAIndex].Chain, pairedAtom.Chain,NearDist));
             return NearDist;
         }
         //determines the root mean square deviation
@@ -238,8 +227,7 @@ namespace MoleViewer
                     count++;
                 }
             }
-            m_maxResNum1 = m_CADist.Last().Value.Prot1Num;
-            m_maxResNum2 = m_CADist.Last().Value.Prot2Num;
+            m_maxDistPair = m_CAPair.Max();
             return Math.Sqrt(SumDist / count);
         }
     }

@@ -9,8 +9,8 @@
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="40" VerticalAlignment="Top" Width="284" Margin="465,73,0,0">
             <Button x:Name="Load2" Content="Load" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="Button2_Click" Margin="198,9,0,0" ToolTip="Browse for .cif file to load"/>
         </Border>
-        <TextBox x:Name="FileName1" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="Protein 1" VerticalAlignment="Top" Width="174" Margin="477,45,0,0" IsReadOnly="True" ToolTip="Protein 1"/>
-        <TextBox x:Name="FileName2" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="Protein 2" VerticalAlignment="Top" Width="174" Margin="477,81,0,0" IsReadOnly="True" ToolTip="Protein 2"/>
+        <TextBox x:Name="FileName1" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="Protein 1" VerticalAlignment="Top" Width="174" Margin="477,45,0,0" IsReadOnly="True" ToolTip="Protein 1 (Reference)"/>
+        <TextBox x:Name="FileName2" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="Protein 2" VerticalAlignment="Top" Width="174" Margin="477,81,0,0" IsReadOnly="True" ToolTip="Protein 2 (Source)"/>
         <TextBox x:Name="Output" HorizontalAlignment="Left" Height="351" TextWrapping="Wrap" VerticalAlignment="Top" Width="284" Margin="465,158,0,0" IsReadOnly="True" VerticalScrollBarVisibility="Auto" ToolTip="Output Feed"/>
         <Canvas x:Name="display" HorizontalAlignment="Left" Height="475" VerticalAlignment="Top" Width="450" RenderTransformOrigin="0.945,0.924" Margin="10,34,0,0" MouseWheel="Mouse_Wheel" MouseUp="Mouse_Up" MouseDown="Mouse_Down" MouseMove="Mouse_Move" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseLeave="Mouse_Leave" ToolTip="Click and Drag to Rotate.&#x0a;Mouse Wheel to Zoom.&#x0a;Click Middle Mouse Button and Drag to Pan." >
             <Viewport3D x:Name="myDisplay" HorizontalAlignment="Left" Height="475" VerticalAlignment="Top" Width="450">
@@ -26,7 +26,7 @@
                 </Viewport3D.Camera>
             </Viewport3D>
         </Canvas>
-        <Button x:Name="Align" Content="Align" HorizontalAlignment="Left" Margin="665,118,0,0" VerticalAlignment="Top" Width="75" Click="Align_Click" ToolTip="Aligns Protein 2 to Protein 1 and reports the RMSD.&#x0a;Also highlights residues whose Alpha Carbon is farthest away from an Alpha Carbon on the other chain."/>
+        <Button x:Name="Align" Content="Align" HorizontalAlignment="Left" Margin="665,118,0,0" VerticalAlignment="Top" Width="75" Click="Align_Click" ToolTip="Aligns Protein 2 to Protein 1 and reports the RMSD.&#x0a;The residue of first chain farthest away from an alpha carbon on the opposite chain&#x0a;and the residue of the opposite alpha carbon are highlighted. "/>
         <CheckBox x:Name="FullAtomToggle" Content="Full Atom Model" HorizontalAlignment="Left" Margin="477,123,0,0" VerticalAlignment="Top" Checked="FullAtomToggle_Checked" Unchecked="FullAtomToggle_Unchecked" ToolTip="Toggles between Alpha Carbon Only and Full Atom rendering."/>
         <ToolBar HorizontalAlignment="Left" VerticalAlignment="Top" Width="761" Height="27" Background="#FFE7F2FF">
             <Button x:Name="help" Content="Help" Height="22" VerticalAlignment="Top" Width="75" Click="ShowHelp"/>

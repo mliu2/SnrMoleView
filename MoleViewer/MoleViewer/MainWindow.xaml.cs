@@ -115,7 +115,7 @@ namespace MoleViewer
                     MakeAtom(atom, Backend.O_RAD, Colors.Ivory);
                 }
 
-                if (atom.Residue_Num == backend.MaxResidue1)
+                if (atom.Residue_Num == backend.MaxDistResidue.Prot1Num && atom.Chain == backend.MaxDistResidue.Chain1)
                 {
                     MakeAtomHighlight(atom);
                 }
@@ -143,7 +143,7 @@ namespace MoleViewer
                     MakeAtom(atom, Backend.O_RAD, Colors.LightSalmon);
                 }
 
-                if (atom.Residue_Num == backend.MaxResidue2)
+                if (atom.Residue_Num == backend.MaxDistResidue.Prot2Num && atom.Chain == backend.MaxDistResidue.Chain2)
                 {
                     MakeAtomHighlight(atom);
                 }
@@ -152,8 +152,15 @@ namespace MoleViewer
         private void redraw()
         {
             myModel3DGroup.Children.Clear();
-            MakeProt1();
-            MakeProt2();
+            try
+            {
+                MakeProt1();
+                MakeProt2();
+            }
+            catch (Exception ex)
+            {
+                Output.Text += ex.Message + "\r\n";
+            }
         }
         private void FocusProt()
         {
@@ -326,7 +333,14 @@ namespace MoleViewer
         private void FullAtomToggle_Checked(object sender, RoutedEventArgs e)
         {
             _fullAtom = true;
-            redraw();
+            try
+            {
+                redraw();
+            }
+            catch (Exception ex)
+            {
+                Output.Text += ex.Message + "\r\n";
+            }
         }
 
         private void FullAtomToggle_Unchecked(object sender, RoutedEventArgs e)
