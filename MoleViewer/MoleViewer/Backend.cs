@@ -19,60 +19,75 @@ namespace MoleViewer
 
     class Backend
     {
-        public const double N_RAD = .75;
-        public const double O_RAD = .73;
-        public const double C_RAD = .77;
-        public const double H_RAD = .38;
+        
 
-        private Protein _prot1;
-        private Protein _prot2;
-        //holds distance for CA and records the residue number
+        private Protein m_prot1;
+        private Protein m_prot2;
+        //holds distance for paired alpha carbons and records the residue number
         private List<ResNumPair> m_CAPair;
+        //holds the pair with the greatest distance
         private ResNumPair m_maxDistPair;
+        /// <summary>
+        /// Constructor for the backend object. This object holds 2 proteins and contains functions for protein-protein alignment.
+        /// Contains functions that allow for the display to retrieve information about the protein.
+        /// </summary>
         public Backend()
         {
-            _prot1 = new Protein();
-            _prot2 = new Protein();
+            m_prot1 = new Protein();
+            m_prot2 = new Protein();
             m_CAPair = new List<ResNumPair>();
         }
-        private void CenterProt(Protein prtn)
+        /// <summary>
+        /// Translate the center of the protein to the center of the axis. 
+        /// </summary>
+        /// <param name="a_prtn">Protein to be centered</param>
+        private void CenterProt(Protein a_prtn)
         {
-            prtn.Translate(-prtn.CenterX(), -prtn.CenterY(), -prtn.CenterZ());
+            a_prtn.Translate(-a_prtn.CenterX(), -a_prtn.CenterY(), -a_prtn.CenterZ());
         }
         
-        //CODE FOR SPHERES FROM ftp://ftp.oreilly.com/pub/examples/9780735623941/3DProgWin/Chapter%206/BeachBallSphere/BeachBallSphere.cs
-        public MeshGeometry3D GenerateSphere(Point3D center, double radius, int slices, int stacks)
+        /// <summary>
+        /// Generates a spherical geometry mesh. It divides the sphere into a number of slices and stacks for which triangles can be generated.
+        /// Written by Charles Petzold, 2007
+        /// FROM ftp://ftp.oreilly.com/pub/examples/9780735623941/3DProgWin/Chapter%206/BeachBallSphere/BeachBallSphere.cs
+        /// </summary>
+        /// <param name="a_center">3D point of where the center of the sphere is</param>
+        /// <param name="a_radius">Radius of the sphere to be generated</param>
+        /// <param name="a_slices">Number of horizontal slices that the sphere will have. Increasing this will increase the smoothness of the sphere.</param>
+        /// <param name="a_stacks">Number of vertical slices that the sphere will have. Increasing this will increase the smoothness of the sphere.</param>
+        /// <returns>The geometric mesh of the sphere.</returns>
+        public MeshGeometry3D GenerateSphere(Point3D a_center, double a_radius, int a_slices, int a_stacks)
         {
             // Create the MeshGeometry3D.
             MeshGeometry3D mesh = new MeshGeometry3D();
 
             // Fill the Position, Normals, and TextureCoordinates collections.
-            for (int stack = 0; stack <= stacks; stack++)
+            for (int stack = 0; stack <= a_stacks; stack++)
             {
-                double phi = Math.PI / 2 - stack * Math.PI / stacks;
-                double y = radius * Math.Sin(phi);
-                double scale = -radius * Math.Cos(phi);
+                double phi = Math.PI / 2 - stack * Math.PI / a_stacks;
+                double y = a_radius * Math.Sin(phi);
+                double scale = -a_radius * Math.Cos(phi);
 
-                for (int slice = 0; slice <= slices; slice++)
+                for (int slice = 0; slice <= a_slices; slice++)
                 {
-                    double theta = slice * 2 * Math.PI / slices;
+                    double theta = slice * 2 * Math.PI / a_slices;
                     double x = scale * Math.Sin(theta);
                     double z = scale * Math.Cos(theta);
 
                     Vector3D normal = new Vector3D(x, y, z);
                     mesh.Normals.Add(normal);
-                    mesh.Positions.Add(normal + center);
+                    mesh.Positions.Add(normal + a_center);
                     mesh.TextureCoordinates.Add(
-                            new Point((double)slice / slices,
-                                      (double)stack / stacks));
+                            new Point((double)slice / a_slices,
+                                      (double)stack / a_stacks));
                 }
             }
 
             // Fill the TriangleIndices collection.
-            for (int stack = 0; stack < stacks; stack++)
-                for (int slice = 0; slice < slices; slice++)
+            for (int stack = 0; stack < a_stacks; stack++)
+                for (int slice = 0; slice < a_slices; slice++)
                 {
-                    int n = slices + 1; // Keep the line length down.
+                    int n = a_slices + 1; // Keep the line length down.
 
                     if (stack != 0)
                     {
@@ -80,7 +95,7 @@ namespace MoleViewer
                         mesh.TriangleIndices.Add((stack + 1) * n + slice);
                         mesh.TriangleIndices.Add((stack + 0) * n + slice + 1);
                     }
-                    if (stack != stacks - 1)
+                    if (stack != a_stacks - 1)
                     {
                         mesh.TriangleIndices.Add((stack + 0) * n + slice + 1);
                         mesh.TriangleIndices.Add((stack + 1) * n + slice);
@@ -90,20 +105,35 @@ namespace MoleViewer
             return mesh;
         }
 
-        public int Prot1Parse(string file)
+        /// <summary>
+        /// Parses a file into a protein object as m_prot1.
+        /// The protein is then centered, and the list for calculating RMSD is cleared, as a new protein was loaded in.
+        /// </summary>
+        /// <param name="a_file">Path to the file to be parsed.</param>
+        /// <returns>Number of atoms that were parsed.</returns>
+        public int Prot1Parse(string a_file)
         {
-            int num = _prot1.ParseFile(file);
+            int num = m_prot1.ParseFile(a_file);
             CenterProt(Protein1);
             RMSDDictClear();
             return num;
         }
-        public int Prot2Parse(string file)
+        /// <summary>
+        /// Parses a file into a protein object as m_prot2.
+        /// The protein is then centered, and the list for calculating RMSD is cleared, as a new protein was loaded in.
+        /// </summary>
+        /// <param name="a_file">Path to the file to be parsed.</param>
+        /// <returns>Number of atoms that were parsed.</returns>
+        public int Prot2Parse(string a_file)
         {
-            int num = _prot2.ParseFile(file);
+            int num = m_prot2.ParseFile(a_file);
             CenterProt(Protein2);
             RMSDDictClear();
             return num;
         }
+        /// <summary>
+        /// Accessor to get the ResNumPair with the greatest distance.
+        /// </summary>
         public ResNumPair MaxDistResidue
         {
             get
@@ -111,20 +141,35 @@ namespace MoleViewer
                 return m_maxDistPair;
             }
         }
+        /// <summary>
+        /// Accessor for m_prot1
+        /// </summary>
         public Protein Protein1
         {
             get
             {
-                return _prot1;
+                return m_prot1;
             }
         }
+        /// <summary>
+        /// Accessor for m_prot2.
+        /// </summary>
         public Protein Protein2
         {
             get
             {
-                return _prot2;
+                return m_prot2;
             }
         }
+        /// <summary>
+        /// Performs ICP Alignment using LIBICP 1.4.7.
+        /// Checks if the proteins fit the minimum requirements of the alignment. 
+        /// Throws if it does not, or if there are less than two proteins loaded.
+        /// Extract the alpha carbon matrix from the proteins. Sets up the translation and rotation matrices.
+        /// Fits the two matrices using ICP. The rotation matrix is applied to a full atom matrix of Protein2.
+        /// Protein2 is then translated. Calls RMSD() to calculate the RMSD between the two proteins.
+        /// </summary>
+        /// <returns>RMSD value between the two proteins.</returns>
         public double ICPAlignment()
         {
             if (Protein1.Count == 0)
@@ -141,8 +186,8 @@ namespace MoleViewer
                 throw (new Exception("Alignment Error: Not enough atoms for alignment."));
             }
             //aligns by CA backbone
-            double[,] prot1Mat = _prot1.CAMatrix();
-            double[,] prot2Mat = _prot2.CAMatrix();
+            double[,] prot1Mat = m_prot1.CAMatrix();
+            double[,] prot2Mat = m_prot2.CAMatrix();
             icp_net.ManagedICP align = new icp_net.ManagedICP(prot1Mat, Protein1.CACount, 3);
 
             //set up return Rotation matrix
@@ -158,7 +203,7 @@ namespace MoleViewer
 
             //get full atom matrix to transform
             // LIBICP actually takes in a n x 3 matrix, but we need a 3 x n matrix for the math, so ToMatrix() gives a full atom matrix in that orientation
-            double[,] prot2FullMat = _prot2.ToMatrix();
+            double[,] prot2FullMat = m_prot2.ToMatrix();
             //create objects of Matrix type to perfrom matrix multiplication
             Matrix<double> prot2MatObj = DenseMatrix.OfArray(prot2FullMat);
             Matrix<double> RMatObj = DenseMatrix.OfArray(RMat);
@@ -168,18 +213,25 @@ namespace MoleViewer
              */
             prot2MatObj = RMatObj * prot2MatObj;
             //sets the protein coordinates to the matrix
-            _prot2.FromMatrix(prot2MatObj);
+            m_prot2.FromMatrix(prot2MatObj);
             //translate
-            _prot2.Translate(TMat[0], TMat[1], TMat[2]);
+            m_prot2.Translate(TMat[0], TMat[1], TMat[2]);
             return RMSD();
         }
-
+        /// <summary>
+        /// Clears the list associated with finding RMSD. Resets the value of the ResNumPair with the greatest distance.
+        /// </summary>
         private void RMSDDictClear()
         {
             m_CAPair.Clear();
             m_maxDistPair = new ResNumPair();
         }
-        //Finds the nearest CA carbon in protein 2, should input index of a CA carbon on protein 1
+        /// <summary>
+        /// For an alpha carbon on protein 1, it will find the nearest alpha carbon in protein 2.
+        /// It then creates a ResNumPair object to be added to the m_CAPair list for RMSD calculations.
+        /// </summary>
+        /// <param name="a_CAIndex">Index in the list of proteins for the alpha carbon on protein 1</param>
+        /// <returns>Distance between the two alpha carbons</returns>
         private double Nearest(int a_CAIndex)
         {
             double NearDist = double.PositiveInfinity;
@@ -211,8 +263,15 @@ namespace MoleViewer
             m_CAPair.Add(new ResNumPair(Protein1.Atoms[a_CAIndex].Residue_Num, pairedAtom.Residue_Num, Protein1.Atoms[a_CAIndex].Chain, pairedAtom.Chain,NearDist));
             return NearDist;
         }
-        //determines the root mean square deviation
-        //which the square root of the mean of the distance between a set of points
+        /// <summary>
+        /// Calculates the Root-Mean-Squared Deviation(RMSD) between the two proteins using alpha carbons.
+        /// The RMSD is the square root of the mean of the distance between a set of points.
+        /// The set of points it examines comprise the alpha carbon backbone of the proteins. This exludes the side atoms.
+        /// It calls Nearest(int) to populate the list that it uses to determine RMSD and sums the returned distance.
+        /// It divides that by the number of alpha carbons to get the mean, which is the then rooted to get the RMSD.
+        /// Also marks the atom pair with the greatest distance.
+        /// </summary>
+        /// <returns>The RMSD between the two proteins' alpha carbon backbone.</returns>
         private double RMSD()
         {
             RMSDDictClear();

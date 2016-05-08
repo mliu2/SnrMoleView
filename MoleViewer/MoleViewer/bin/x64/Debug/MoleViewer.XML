@@ -1,0 +1,557 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MoleViewer</name>
+    </assembly>
+    <members>
+        <member name="T:MoleViewer.AboutWindow">
+            <summary>
+            Interaction logic for AboutWindow.xaml
+            </summary>
+            <summary>
+            AboutWindow
+            </summary>
+        </member>
+        <member name="M:MoleViewer.AboutWindow.#ctor">
+            <summary>
+            Displays the about window
+            </summary>
+        </member>
+        <member name="M:MoleViewer.AboutWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="F:MoleViewer.Atom.N_RAD">
+            <summary>
+            Radius of covalently bonded nitrogen atom
+            </summary>
+        </member>
+        <member name="F:MoleViewer.Atom.O_RAD">
+            <summary>
+            Radius of covalently bonded oxygen atom
+            </summary>
+        </member>
+        <member name="F:MoleViewer.Atom.C_RAD">
+            <summary>
+            Radius of covalently bonded carbon atom
+            </summary>
+        </member>
+        <member name="M:MoleViewer.Atom.#ctor">
+            <summary>
+            Default Constructor for Atom type
+            </summary>
+        </member>
+        <member name="M:MoleViewer.Atom.#ctor(System.String,System.String,System.Char,System.Int32,System.Double,System.Double,System.Double)">
+            <summary>
+            Constructor for Atom type
+            </summary>
+            <param name="a_ele">String for the element of the atom</param>
+            <param name="a_res">String representing what residue type atom belongs to</param>
+            <param name="a_cha">Char for representing which chain atom is on</param>
+            <param name="a_r_num">Int representing what residue number the atom is on</param>
+            <param name="a_x_in">Double for the x coordinate of the atom in angstroms</param>
+            <param name="a_y_in">Double for the y coordinate of the atom in angstroms</param>
+            <param name="a_z_in">Double for the z coordinate of the atom in angstroms</param>
+        </member>
+        <member name="P:MoleViewer.Atom.Ele">
+            <summary>
+            Accesor for what element the atom is
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Atom.X">
+            <summary>
+            Accesor for the x coordinate of the atom
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Atom.Y">
+            <summary>
+            Accesor for the y coordinate of the atom
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Atom.Z">
+            <summary>
+            Accesor for the z coordinate of the atom
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Atom.CA">
+            <summary>
+            Accesor for if the atom is an alpha carbon
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Atom.Residue_Num">
+            <summary>
+            Accesor for the residue number of the atom
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Atom.Chain">
+            <summary>
+            Accesor for the chain the atom is on
+            </summary>
+        </member>
+        <member name="M:MoleViewer.Backend.#ctor">
+            <summary>
+            Constructor for the backend object. This object holds 2 proteins and contains functions for protein-protein alignment.
+            Contains functions that allow for the display to retrieve information about the protein.
+            </summary>
+        </member>
+        <member name="M:MoleViewer.Backend.CenterProt(MoleViewer.Protein)">
+            <summary>
+            Translate the center of the protein to the center of the axis. 
+            </summary>
+            <param name="a_prtn">Protein to be centered</param>
+        </member>
+        <member name="M:MoleViewer.Backend.GenerateSphere(System.Windows.Media.Media3D.Point3D,System.Double,System.Int32,System.Int32)">
+            <summary>
+            Generates a spherical geometry mesh. It divides the sphere into a number of slices and stacks for which triangles can be generated.
+            Written by Charles Petzold, 2007
+            FROM ftp://ftp.oreilly.com/pub/examples/9780735623941/3DProgWin/Chapter%206/BeachBallSphere/BeachBallSphere.cs
+            </summary>
+            <param name="a_center">3D point of where the center of the sphere is</param>
+            <param name="a_radius">Radius of the sphere to be generated</param>
+            <param name="a_slices">Number of horizontal slices that the sphere will have. Increasing this will increase the smoothness of the sphere.</param>
+            <param name="a_stacks">Number of vertical slices that the sphere will have. Increasing this will increase the smoothness of the sphere.</param>
+            <returns>The geometric mesh of the sphere.</returns>
+        </member>
+        <member name="M:MoleViewer.Backend.Prot1Parse(System.String)">
+            <summary>
+            Parses a file into a protein object as m_prot1.
+            The protein is then centered, and the list for calculating RMSD is cleared, as a new protein was loaded in.
+            </summary>
+            <param name="a_file">Path to the file to be parsed.</param>
+            <returns>Number of atoms that were parsed.</returns>
+        </member>
+        <member name="M:MoleViewer.Backend.Prot2Parse(System.String)">
+            <summary>
+            Parses a file into a protein object as m_prot2.
+            The protein is then centered, and the list for calculating RMSD is cleared, as a new protein was loaded in.
+            </summary>
+            <param name="a_file">Path to the file to be parsed.</param>
+            <returns>Number of atoms that were parsed.</returns>
+        </member>
+        <member name="M:MoleViewer.Backend.ICPAlignment">
+            <summary>
+            Performs ICP Alignment using LIBICP 1.4.7.
+            Checks if the proteins fit the minimum requirements of the alignment. 
+            Throws if it does not, or if there are less than two proteins loaded.
+            Extract the alpha carbon matrix from the proteins. Sets up the translation and rotation matrices.
+            Fits the two matrices using ICP. The rotation matrix is applied to a full atom matrix of Protein2.
+            Protein2 is then translated. Calls RMSD() to calculate the RMSD between the two proteins.
+            </summary>
+            <returns>RMSD value between the two proteins.</returns>
+        </member>
+        <member name="M:MoleViewer.Backend.RMSDDictClear">
+            <summary>
+            Clears the list associated with finding RMSD. Resets the value of the ResNumPair with the greatest distance.
+            </summary>
+        </member>
+        <member name="M:MoleViewer.Backend.Nearest(System.Int32)">
+            <summary>
+            For an alpha carbon on protein 1, it will find the nearest alpha carbon in protein 2.
+            It then creates a ResNumPair object to be added to the m_CAPair list for RMSD calculations.
+            </summary>
+            <param name="a_CAIndex">Index in the list of proteins for the alpha carbon on protein 1</param>
+            <returns>Distance between the two alpha carbons</returns>
+        </member>
+        <member name="M:MoleViewer.Backend.RMSD">
+            <summary>
+            Calculates the Root-Mean-Squared Deviation(RMSD) between the two proteins using alpha carbons.
+            The RMSD is the square root of the mean of the distance between a set of points.
+            The set of points it examines comprise the alpha carbon backbone of the proteins. This exludes the side atoms.
+            It calls Nearest(int) to populate the list that it uses to determine RMSD and sums the returned distance.
+            It divides that by the number of alpha carbons to get the mean, which is the then rooted to get the RMSD.
+            Also marks the atom pair with the greatest distance.
+            </summary>
+            <returns>The RMSD between the two proteins' alpha carbon backbone.</returns>
+        </member>
+        <member name="P:MoleViewer.Backend.MaxDistResidue">
+            <summary>
+            Accessor to get the ResNumPair with the greatest distance.
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Backend.Protein1">
+            <summary>
+            Accessor for m_prot1
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Backend.Protein2">
+            <summary>
+            Accessor for m_prot2.
+            </summary>
+        </member>
+        <member name="T:MoleViewer.HelpWindow">
+            <summary>
+            Interaction logic for HelpWindow.xaml
+            </summary>
+            <summary>
+            HelpWindow
+            </summary>
+        </member>
+        <member name="M:MoleViewer.HelpWindow.#ctor">
+            <summary>
+            Displays the Help window
+            </summary>
+        </member>
+        <member name="M:MoleViewer.HelpWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:MoleViewer.Protein.#ctor">
+            <summary>
+            Default constructor for Protein class
+            </summary>
+        </member>
+        <member name="M:MoleViewer.Protein.CenterX">
+            <summary>
+            Gets the x coordinate of the center of the protein.
+            It will get the center by finding the average of the largest and smallest x value.
+            </summary>
+            <returns>Returns the x coordinate of the center of the protein</returns>
+        </member>
+        <member name="M:MoleViewer.Protein.CenterY">
+            <summary>
+            Gets the y coordinate of the center of the protein.
+            It will get the center by finding the average of the largest and smallest y value.
+            </summary>
+            <returns>Returns the y coordinate of the center of the protein</returns>
+        </member>
+        <member name="M:MoleViewer.Protein.CenterZ">
+            <summary>
+            Gets the z coordinate of the center of the protein.
+            It will get the center by finding the average of the largest and smallest z value.
+            </summary>
+            <returns>Returns the z coordinate of the center of the protein</returns>
+        </member>
+        <member name="M:MoleViewer.Protein.Translate(System.Double,System.Double,System.Double)">
+            <summary>
+            Translates the protein by the input values
+            </summary>
+            <param name="a_x">Amount to translate protein in the x axis in angstroms</param>
+            <param name="a_y">Amount to translate protein in the y axis in angstroms</param>
+            <param name="a_z">Amount to translate protein in the z axis in angstroms</param>
+        </member>
+        <member name="M:MoleViewer.Protein.ToMatrix">
+            <summary>
+            Creates a horizontal matrix of all of the atoms' coordinates and returns it.
+            This matrix is used for the matrix multiplication to transform the protein.
+            </summary>
+            <returns>Returns full atom matrix, of 3 rows, Count number of columns</returns>
+        </member>
+        <member name="M:MoleViewer.Protein.CAMatrix">
+            <summary>
+            Creates a vertical matrix of alpha carbon coordinates and returns it.
+            This matrix is used for the LIBICP input to determine the transform matrix.
+            </summary>
+            <returns>Returns alpha carbon matrix of CACount number of rows, 3 columns</returns>
+        </member>
+        <member name="M:MoleViewer.Protein.FromMatrix(MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Takes in a horizontal matrix and repositions each atom to its corresponding set of coordinates in the matrix.
+            </summary>
+            <param name="input">Horizontal matrix produced by multiplying the rotation matrix with the matrix from ToMatrix()</param>
+        </member>
+        <member name="M:MoleViewer.Protein.ParseFile(System.String)">
+            <summary>
+            Opens a file from a filpath and reads in data. For each line, it checks if it is an atom record.
+            If it is an atom record, it will parse it by splitting the string according to the PDBx/mmCIF file format.
+            If it does not work, it will throw an exception stating that the file cannot be parsed.
+            </summary>
+            <param name="file">String for the path to the file to be parsed</param>
+            <returns>Int for the number of atoms that were parsed</returns>
+        </member>
+        <member name="P:MoleViewer.Protein.Atoms">
+            <summary>
+            Accessor for list of atoms
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Protein.Count">
+            <summary>
+            Accessor for number of atoms in protein
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Protein.CACount">
+            <summary>
+            Accessor for the number of alpha carbons in the protein
+            </summary>
+        </member>
+        <member name="M:MoleViewer.ResNumPair.#ctor">
+            <summary>
+            Default Constructor for ResNumPair
+            </summary>
+        </member>
+        <member name="M:MoleViewer.ResNumPair.#ctor(System.Int32,System.Int32,System.Char,System.Char,System.Double)">
+            <summary>
+            Constructor for ResNumPair
+            </summary>
+            <param name="a_num1">Residue number of Alpha Carbon on first protein</param>
+            <param name="a_num2">Residue number of Alpha Carbon on second protein</param>
+            <param name="a_chain1">Chain of Alpha Carbon on first protein</param>
+            <param name="a_chain2">Chain of Alpha Carbon on second protein</param>
+            <param name="a_dist">Distance between the two alpha carbons</param>
+        </member>
+        <member name="M:MoleViewer.ResNumPair.CompareTo(MoleViewer.ResNumPair)">
+            <summary>
+            Required comparison function for child of IComparable
+            </summary>
+            <param name="a_other">Other ResNumPair object to compare to by distance</param>
+            <returns>
+            Returns 0 if the distances are equal.
+            Returns -1 if this distance is smaller than distance of a_other.
+            Returns 1 if this distance is greater than distance of a_other.
+            </returns>
+        </member>
+        <member name="P:MoleViewer.ResNumPair.Prot1Num">
+            <summary>
+            Accessor for the residue number of alpha carbon on first protein
+            </summary>
+        </member>
+        <member name="P:MoleViewer.ResNumPair.Prot2Num">
+            <summary>
+            Accessor for the residue number of alpha carbon on second protein
+            </summary>
+        </member>
+        <member name="P:MoleViewer.ResNumPair.Distance">
+            <summary>
+            Accessor for distance between the two atoms
+            </summary>
+        </member>
+        <member name="P:MoleViewer.ResNumPair.Chain1">
+            <summary>
+            Accessor for the chain of the alpha carbon on the first protein
+            </summary>
+        </member>
+        <member name="P:MoleViewer.ResNumPair.Chain2">
+            <summary>
+            Accessor for the chain of the alpha carbon on the second protein
+            </summary>
+        </member>
+        <member name="T:MoleViewer.App">
+            <summary>
+            Interaction logic for App.xaml
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:MoleViewer.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:MoleViewer.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:MoleViewer.MainWindow">
+            <summary>
+            Interaction logic for MainWindow.xaml
+            </summary>
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="M:MoleViewer.MainWindow.#ctor">
+            <summary>
+            Displays main window
+            </summary>
+        </member>
+        <member name="M:MoleViewer.MainWindow.ShowHelp(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handler for showing the Help window when the help button is clicked.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.ShowAbout(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handler for showing the About window when the about button is clicked.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Shape3d">
+            <summary>
+            Initiates the Viewport3D content. Adds model object to the display.
+            Initiates transform object for camera movement.
+            </summary>
+        </member>
+        <member name="M:MoleViewer.MainWindow.MakeAtom(MoleViewer.Atom,System.Double,System.Windows.Media.Color)">
+            <summary>
+            Creates the 3d atom model. Calls GenerateSphere out of the backend to make the mesh.
+            Applies a solid color brush and diffuse material to the mesh to texture the model.
+            Adds the model to the modelGroup
+            </summary>
+            <param name="atom">The atom that is being represented</param>
+            <param name="radius">Radius of the sphere to generate</param>
+            <param name="color">Color of the sphere to generate</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.MakeAtomHighlight(MoleViewer.Atom)">
+            <summary>
+            Generates a slightly larger transparent sphere to highlight the atom.
+            Creates a slightly larger sphere using GenerateSphere out of the backend.
+            Applies a transparent solid color brush and an emissive material to the mesh.
+            Adds the model to the modelGroup
+            </summary>
+            <param name="atom">Atom that is being highlighted</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.MakeProt1">
+            <summary>
+            Generates the 3d model for protein 1.
+            Calls MakeAtom(Atom,double,Color) using the correct radii and color scheme.
+            Calls MakeAtomHighlight(Atom) to highlight atom with greatest distance.
+            </summary>
+        </member>
+        <member name="M:MoleViewer.MainWindow.MakeProt2">
+            <summary>
+            Generates the 3d model for protein 2.
+            Calls MakeAtom(Atom,double,Color) using the correct radii and color scheme.
+            Calls MakeAtomHighlight(Atom) to highlight atom with greatest distance.
+            </summary>
+        </member>
+        <member name="M:MoleViewer.MainWindow.redraw">
+            <summary>
+            Redraws both models. 
+            Clears the model group and calls MakeProt1() and MakeProt2() to remake the models.
+            </summary>
+        </member>
+        <member name="M:MoleViewer.MainWindow.FocusProt">
+            <summary>
+            Moves the camera position back to the origin.
+            </summary>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Button1_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handler for the Load button of protein 1.
+            Opens a file browser dialog and gets the filepath. 
+            Parses the file and reports te number of atoms loaded.
+            Focuses the camera and redraws.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Button2_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handler for the Load button of protein 2.
+            Opens a file browser dialog and gets the filepath. 
+            Parses the file and reports te number of atoms loaded.
+            Focuses the camera and redraws.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Mouse_Wheel(System.Object,System.Windows.Input.MouseWheelEventArgs)">
+            <summary>
+            Zooms the camera by mouse wheel.
+            Adjusts the camera position along the Z axis when the mouse wheel is scrolled.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Mouse_Up(System.Object,System.Windows.Input.MouseButtonEventArgs)">
+            <summary>
+            Sets the variables that check if the mouse buttons are held to false
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">The mouse event that triggers this handler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Mouse_Down(System.Object,System.Windows.Input.MouseButtonEventArgs)">
+            <summary>
+            Handler for when mouse buttons are pressed in the Viewport3D.
+            If middle mouse button is clicked, it sets the flag for middle mouse button being held, and remembers the mouse position.
+            If left mouse button is clicked, it sets the flag for the left mouse button being held, and projects the mouse position to a trackball to calculate perceived depth.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">The mouse event that triggers this handler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Mouse_Move(System.Object,System.Windows.Input.MouseEventArgs)">
+            <summary>
+            Handler for when mouse moves in the Viewport3D
+            If middle mouse is held and moved, the camera will move along the perceived XY plane based on how much the mouse moved.
+            The percieved xy plane is calculated by finding the up direction of the camera (y axis) and getting the cross product with the look direction (getting the x axis).
+            If left mouse is held and moved, the camera and light source will be transformed based on the Track() function.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">The mouse event that trigger this handler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Mouse_Leave(System.Object,System.Windows.Input.MouseEventArgs)">
+            <summary>
+            When the mouse leaves the Viewport3D object space, unflags the mouse state booleans.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.ProjectToTrackball(System.Double,System.Double,System.Windows.Point)">
+            <summary>
+            From 3Dtools library 
+            (c) 2007 
+            Copyright Microsoft Corporation. Subject to Microsoft Limited Permissive License. 
+            https://3dtools.codeplex.com/SourceControl/latest#3DTools/3DTools/TrackballDecorator.cs
+            Projects a point to the trackball which the camera will be transformed along.
+            </summary>
+            <param name="width">Width of area to track in</param>
+            <param name="height">Height of area to track in</param>
+            <param name="point">Point that needs to be projected.</param>
+            <returns>A 3d vector holding the x,y,z values of the point that has been projected</returns>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Track(System.Windows.Point)">
+            <summary>
+            From 3Dtools library 
+            (c) 2007 
+            Copyright Microsoft Corporation. Subject to Microsoft Limited Permissive License. 
+            https://3dtools.codeplex.com/SourceControl/latest#3DTools/3DTools/TrackballDecorator.cs
+            Recalculates the rotation3d object from the new position of the mouse. 
+            Axis of rotation is the crossproduct of the previous trackball vector and the current trackball vector.
+            Angle of rotation is the angle between the previous trackball vector and the current trackball vector.
+            This new rotation is composed with the previous rotation to generate the new total rotation.
+            </summary>
+            <param name="currentPosition">Point representing the current mouse position.</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.Align_Click(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handler for when the Alignm button is clicked.
+            Calls ICPAlignment() out of the backend object, redraws the models, and reports the RMSD between the two proteins.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.FullAtomToggle_Checked(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handler for when the fullatom checkbox is toggled.
+            It will set the flag for full atom representation and redaw the models.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.FullAtomToggle_Unchecked(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Handler for when the fullatom checkbox is untoggled.
+            It will reset the flag for full atom representation and redaw the models.
+            </summary>
+            <param name="sender">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+            <param name="e">Doesn't do anything, but required to delegate RoutedEventHandler</param>
+        </member>
+        <member name="M:MoleViewer.MainWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:MoleViewer.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MoleViewer.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+    </members>
+</doc>

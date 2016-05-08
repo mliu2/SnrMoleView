@@ -19,6 +19,9 @@ namespace MoleViewer
     /// </summary>
     public partial class HelpWindow : Window
     {
+        /// <summary>
+        /// Displays the Help window
+        /// </summary>
         public HelpWindow()
         {
             InitializeComponent();

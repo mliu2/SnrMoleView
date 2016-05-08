@@ -17,3 +17,4 @@ C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x6
 C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Release\MoleViewer.csproj.GenerateResource.Cache
 C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Release\MoleViewer.exe
 C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Release\MoleViewer.pdb
+C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Release\MoleViewer.csprojResolveAssemblyReference.cache

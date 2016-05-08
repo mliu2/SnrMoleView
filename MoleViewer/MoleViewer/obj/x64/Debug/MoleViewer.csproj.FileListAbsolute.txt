@@ -18,3 +18,4 @@ C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x6
 C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Debug\HelpWindow.g.cs
 C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Debug\AboutWindow.baml
 C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\obj\x64\Debug\AboutWindow.g.cs
+C:\Users\Neru\documents\visual studio 2013\Projects\MoleViewer\MoleViewer\bin\x64\Debug\MoleViewer.XML

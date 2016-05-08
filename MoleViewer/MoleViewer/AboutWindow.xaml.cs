@@ -19,6 +19,9 @@ namespace MoleViewer
     /// </summary>
     public partial class AboutWindow : Window
     {
+        /// <summary>
+        /// Displays the about window
+        /// </summary>
         public AboutWindow()
         {
             InitializeComponent();
