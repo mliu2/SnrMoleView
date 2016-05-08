@@ -267,7 +267,7 @@ namespace MoleViewer
         /// Calculates the Root-Mean-Squared Deviation(RMSD) between the two proteins using alpha carbons.
         /// The RMSD is the square root of the mean of the distance between a set of points.
         /// The set of points it examines comprise the alpha carbon backbone of the proteins. This exludes the side atoms.
-        /// It calls Nearest(int) to populate the list that it uses to determine RMSD and sums the returned distance.
+        /// It calls Nearest(int) to populate the list that it uses to determine RMSD and sums the squared of the returned distance.
         /// It divides that by the number of alpha carbons to get the mean, which is the then rooted to get the RMSD.
         /// Also marks the atom pair with the greatest distance.
         /// </summary>
@@ -282,12 +282,12 @@ namespace MoleViewer
                 if (Protein1.Atoms[i].CA)
                 {
                     double dist = Nearest(i);
-                    SumDist += dist;
+                    SumDist += dist*dist;
                     count++;
                 }
             }
             m_maxDistPair = m_CAPair.Max();
-            return Math.Sqrt(SumDist / count);
+            return Math.Sqrt(SumDist/ count);
         }
     }
 }
